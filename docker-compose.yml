@@ -71,8 +71,12 @@ services:
         restart: always
         environment:
             MONGO_INITDB_DATABASE: 'todo'
+            MONGO_INITDB_ROOT_USERNAME: 'todo'
+            MONGO_INITDB_ROOT_PASSWORD: 'todo'
         volumes:
             - 'mongo-local:/data/db'
+        networks:
+            - sail
 networks:
     sail:
         driver: bridge
