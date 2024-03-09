@@ -63,6 +63,16 @@ services:
                 - ping
             retries: 3
             timeout: 5s
+    mongodb:
+        container_name: mongodb
+        image: 'mongo:4.4'
+        ports:
+            - '27017:27017'
+        restart: always
+        environment:
+            MONGO_INITDB_DATABASE: 'todo'
+        volumes:
+            - 'mongo-local:/data/db'
 networks:
     sail:
         driver: bridge
@@ -70,4 +80,6 @@ volumes:
     sail-mysql:
         driver: local
     sail-redis:
+        driver: local
+    mongo-local:
         driver: local
