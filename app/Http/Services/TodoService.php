@@ -10,6 +10,7 @@ class TodoService
     {
         return Todo::create([
             'description' => $payload['description'],
+            'user_id' => $payload['user_id'],
         ]);
     }
 }
