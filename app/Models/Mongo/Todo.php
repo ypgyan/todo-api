@@ -11,4 +11,9 @@ class Todo extends Model
     use HasFactory;
 
     protected $connection = 'mongodb';
+
+    protected $fillable = [
+        'description',
+        'user_id'
+    ];
 }
