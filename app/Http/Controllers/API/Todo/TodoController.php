@@ -22,9 +22,9 @@ class TodoController extends Controller
     /**
      * Display a listing of the resource.
      */
-    public function index(): TodoCollection
+    public function index(Request $request): TodoCollection
     {
-        return new TodoCollection(Todo::paginate(10));
+        return new TodoCollection($this->service->getUserTodos($request->user()));
     }
 
     /**
@@ -60,8 +60,12 @@ class TodoController extends Controller
     /**
      * Remove the specified resource from storage.
      */
-    public function destroy(string $id)
+    public function destroy(Todo $todo): Application|Response|\Illuminate\Contracts\Foundation\Application|ResponseFactory
     {
-        //
+        if ($todo->user_id !== auth()->id()) {
+            return response(null, 403);
+        }
+        $this->service->deleteTodo($todo);
+        return response(null, 204);
     }
 }
