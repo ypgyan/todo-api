@@ -22,23 +22,23 @@ class TodoController extends Controller
     /**
      * Display a listing of the resource.
      */
-    public function index(): Application|Response|\Illuminate\Contracts\Foundation\Application|ResponseFactory
+    public function index(): TodoCollection
     {
-        return response(new TodoCollection(Todo::paginate(10)));
+        return new TodoCollection(Todo::paginate(10));
     }
 
     /**
      * Store a newly created resource in storage.
      */
-    public function store(Request $request): Application|Response|\Illuminate\Contracts\Foundation\Application|ResponseFactory
+    public function store(Request $request): TodoResource
     {
         $validatedData = $request->validate([
             'description' => 'required',
         ]);
-
-        return response(new TodoResource($this->service->createTodo(
+        $validatedData['user_id'] = $request->user()->id;
+        return new TodoResource($this->service->createTodo(
             $validatedData
-        )));
+        ));
     }
 
     /**
