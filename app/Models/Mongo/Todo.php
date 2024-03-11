@@ -16,4 +16,9 @@ class Todo extends Model
         'description',
         'user_id'
     ];
+
+    protected $casts = [
+        'created_at' => 'datetime',
+        'updated_at' => 'datetime',
+    ];
 }
