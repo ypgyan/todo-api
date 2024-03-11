@@ -20,7 +20,7 @@ use Illuminate\Support\Facades\Route;
 Route::get('/', function () {
     return response()->json([
         'message' => 'Welcome to TODO-API',
-        'version' => '1.0.0'
+        'version' => '0.1.0'
     ]);
 });
 Route::post('/login', LoginController::class);
