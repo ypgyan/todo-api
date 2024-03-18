@@ -84,3 +84,33 @@ test('returns 403 when show is called with wrong user owner todo', function () {
     $response = $this->getJson(route('todos.show', ['todo' => $todo->id]));
     $response->assertStatus(403);
 });
+
+it('updates a todo when update is called with valid todo and user', function () {
+    Todo::truncate();
+    $user = User::factory()->create();
+    $todo = Todo::factory()->create(['user_id' => $user->id]);
+    $newDescription = 'New Description';
+
+    $response = $this->actingAs($user)->putJson(route('todos.update', ['todo' => $todo->id]), ['description' => $newDescription]);
+    $response->assertStatus(200);
+    expect($response->json('data.description'))->toBe($newDescription);
+});
+
+it('returns 403 when update is called with valid todo and invalid user', function () {
+    Todo::truncate();
+    $user = User::factory()->create();
+    $anotherUser = User::factory()->create();
+    $todo = Todo::factory()->create(['user_id' => $user->id]);
+
+    $response = $this->actingAs($anotherUser)->putJson(route('todos.update', ['todo' => $todo->id]), ['description' => 'New Description']);
+    $response->assertStatus(403);
+});
+
+it('returns 422 when update is called with valid todo and user but invalid data', function () {
+    Todo::truncate();
+    $user = User::factory()->create();
+    $todo = Todo::factory()->create(['user_id' => $user->id]);
+
+    $response = $this->actingAs($user)->putJson(route('todos.update', ['todo' => $todo->id]), ['description' => '']);
+    $response->assertStatus(422);
+});
