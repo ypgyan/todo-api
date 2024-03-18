@@ -35,6 +35,7 @@ class TodoController extends Controller
         $validatedData = $request->validate([
             'description' => 'required',
         ]);
+
         $validatedData['user_id'] = $request->user()->id;
         return new TodoResource($this->service->createTodo(
             $validatedData
@@ -54,9 +55,14 @@ class TodoController extends Controller
      */
     public function update(Request $request, Todo $todo): TodoResource
     {
+        if ($todo->user_id !== auth()->id()) {
+            abort(403);
+        }
+
         $validatedData = $request->validate([
             'description' => 'required',
         ]);
+
         return new TodoResource($this->service->updateTodo(
             $todo,
             $validatedData
