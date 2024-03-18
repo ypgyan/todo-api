@@ -3,6 +3,7 @@
 use App\Http\Controllers\API\Auth\LoginController;
 use App\Http\Controllers\API\Auth\LogoutController;
 use App\Http\Controllers\API\Auth\RegisterController;
+use App\Http\Controllers\API\Todo\TodoController;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Route;
 
@@ -19,7 +20,7 @@ use Illuminate\Support\Facades\Route;
 Route::get('/', function () {
     return response()->json([
         'message' => 'Welcome to TODO-API',
-        'version' => '1.0.0'
+        'version' => '0.1.0'
     ]);
 });
 Route::post('/login', LoginController::class);
@@ -31,4 +32,5 @@ Route::middleware(['auth:sanctum'])
             return $request->user();
         });
         Route::post('/logout', LogoutController::class);
+        Route::resource('todos', TodoController::class);
     });
