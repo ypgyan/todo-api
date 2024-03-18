@@ -44,17 +44,23 @@ class TodoController extends Controller
     /**
      * Display the specified resource.
      */
-    public function show(string $id)
+    public function show(Todo $todo): TodoResource
     {
-        //
+        return new TodoResource($todo);
     }
 
     /**
      * Update the specified resource in storage.
      */
-    public function update(Request $request, string $id)
+    public function update(Request $request, Todo $todo): TodoResource
     {
-        //
+        $validatedData = $request->validate([
+            'description' => 'required',
+        ]);
+        return new TodoResource($this->service->updateTodo(
+            $todo,
+            $validatedData
+        ));
     }
 
     /**

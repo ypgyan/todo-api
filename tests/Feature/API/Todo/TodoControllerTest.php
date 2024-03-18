@@ -1,5 +1,6 @@
 <?php
 
+use App\Http\Resources\API\Todo\TodoResource;
 use App\Models\Mongo\Todo;
 use App\Models\User;
 use Laravel\Sanctum\Sanctum;
@@ -48,4 +49,32 @@ test("test Destroy Deletes Todo", function () {
 
     $response = $this->deleteJson(route('todos.destroy', $todo));
     $response->assertStatus(204);
+});
+
+test('returns a todo resource when show is called with valid todo', function () {
+    Todo::truncate();
+    $user = Sanctum::actingAs(User::factory()->create());
+    $todo = Todo::factory()->create(['user_id' => $user->id]);
+
+    // Act
+    $response = $this->getJson(route('todos.show', ['todo' => $todo->id]));
+
+    // Assert
+    $response->assertStatus(200);
+    expect($response->json('data'))->toBe((new TodoResource($todo))->resolve());
+});
+
+test('returns 401 when show is called without user', function () {
+    $invalidTodoId = 9999;
+
+    $response = $this->getJson(route('todos.show', ['todo' => $invalidTodoId]));
+    $response->assertStatus(401);
+});
+
+test('returns 404 when show is called with invalid todo', function () {
+    $invalidTodoId = 9999;
+    Sanctum::actingAs(User::factory()->create());
+
+    $response = $this->getJson(route('todos.show', ['todo' => $invalidTodoId]));
+    $response->assertStatus(404);
 });

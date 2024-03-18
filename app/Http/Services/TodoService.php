@@ -24,4 +24,10 @@ class TodoService
     {
         return Todo::where('user_id', $user->id)->paginate(10);
     }
+
+    public function updateTodo(Todo $todo, array $validatedData): Todo
+    {
+        $todo->update($validatedData);
+        return $todo;
+    }
 }
