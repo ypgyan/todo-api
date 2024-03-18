@@ -56,10 +56,7 @@ test('returns a todo resource when show is called with valid todo', function () 
     $user = Sanctum::actingAs(User::factory()->create());
     $todo = Todo::factory()->create(['user_id' => $user->id]);
 
-    // Act
     $response = $this->getJson(route('todos.show', ['todo' => $todo->id]));
-
-    // Assert
     $response->assertStatus(200);
     expect($response->json('data'))->toBe((new TodoResource($todo))->resolve());
 });
@@ -77,4 +74,13 @@ test('returns 404 when show is called with invalid todo', function () {
 
     $response = $this->getJson(route('todos.show', ['todo' => $invalidTodoId]));
     $response->assertStatus(404);
+});
+
+test('returns 403 when show is called with wrong user owner todo', function () {
+    Todo::truncate();
+    Sanctum::actingAs(User::factory()->create());
+    $todo = Todo::factory()->create(['user_id' => 25]);
+
+    $response = $this->getJson(route('todos.show', ['todo' => $todo->id]));
+    $response->assertStatus(403);
 });

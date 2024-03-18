@@ -47,6 +47,9 @@ class TodoController extends Controller
      */
     public function show(Todo $todo): TodoResource
     {
+        if ($todo->user_id !== auth()->id()) {
+            abort(403);
+        }
         return new TodoResource($todo);
     }
 
